@@ -25,16 +25,18 @@ public class Tab {
 	private int tax;
 	private Long total;
 	
-	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "employee_id", nullable = false)
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "employee_id", nullable = false)
 	private Employee employee;
 	
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
 	@ManyToMany(cascade = CascadeType.PERSIST)
-	@JoinTable(name = "tabs_cocktails", joinColumns = @JoinColumn(name = "tab_id"), inverseJoinColumns = @JoinColumn(name = "cocktail_id"))
+	@JoinTable(name = "tabs_cocktail", 
+	joinColumns = @JoinColumn(name = "tab_id"), 
+	inverseJoinColumns = @JoinColumn(name = "cocktail_id"))
 	Set<Cocktail> cocktails = new HashSet<>();
 	
 }
