@@ -1,34 +1,47 @@
 package bar.os.service;
-
+//author Svitlana Leven
 import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import bar.os.controller.model.TabData;
+import bar.os.dao.CocktailDao;
+import bar.os.dao.EmployeeDao;
 import bar.os.dao.TabDao;
+import bar.os.entity.Cocktail;
 import bar.os.entity.Employee;
 import bar.os.entity.Tab;
 
+@Service
 public class TabService {
 	@Autowired
 	private TabDao tabDao;
 
+	@Autowired
+	private EmployeeDao employeeDao;
+
+	@Autowired
+	private CocktailDao cocktailDao;
+
 	@Transactional(readOnly = false)
-	public TabData saveTab(TabData tabData) {
+	public TabData saveTab(TabData tabData, Long employeeId) {
 		Long tabId = tabData.getTabId();
 		Tab tab = findOrCreateTab(tabId);
-
+		Employee employee = employeeDao.findByEmployeeId(employeeId);
 		setFieldsInTab(tab, tabData);
+		employee.getTabs().add(tab);
+		tab.setEmployee(employee);
 		return new TabData(tabDao.save(tab));
 
 	}
 
 	private void setFieldsInTab(Tab tab, TabData tabData) {
-		tab.setTabId(tabData.getTabId());
+		tab.setTax(tabData.getTax());
 		tab.setTotal(tabData.getTotal());
 	}
 
@@ -66,10 +79,10 @@ public class TabService {
 	}
 
 	public List<TabData> retrieveAllTabsByEmployeeId(Long employeeId) {
-		List<Tab> tabs = tabDao.findAllByEmployeeId(employeeId);
+		Employee employee = employeeDao.findByEmployeeId(employeeId);
 		List<TabData> result = new LinkedList<>();
 
-		for (Tab tab : tabs) {
+		for (Tab tab : employee.getTabs()) {
 			result.add(new TabData(tab));
 		}
 		return result;
@@ -80,5 +93,13 @@ public class TabService {
 		Tab tab = findTabById(tabId);
 		tabDao.delete(tab);
 
+	}
+
+	@Transactional(readOnly = false)
+	public TabData addCocktailTab(String cocktailName, Long tabId) {
+		Cocktail cocktail = cocktailDao.findByName(cocktailName);
+		Tab tab = findTabById(tabId);
+		tab.getCocktails().add(cocktail);
+		return new TabData(tabDao.save(tab));
 	}
 }

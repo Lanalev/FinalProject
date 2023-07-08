@@ -1,5 +1,5 @@
 package bar.os.entity;
-
+//author Svitlana Leven
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,12 +22,12 @@ public class Tab {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long tabId;
-	private int tax;
+	private Long tax;
 	private Long total;
 	
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "employee_id", nullable = false)
 	private Employee employee;
 	

@@ -1,5 +1,5 @@
 package bar.os.controller;
-
+//author Svitlana Leven
 import java.util.List;
 import java.util.Map;
 
@@ -41,13 +41,13 @@ public class EmployeeController {
 		return employeeService.saveEmployee(employeeData);
 	}
 	
-	@GetMapping("/employee")
+	@GetMapping("/get")
 	public List<EmployeeData> retrieveAllEmployees() {
 		log.info("Retrieve all employees called.");
 		return employeeService.retrieveAllEmployees();
 	}
 	
-	@GetMapping("/employee/{employeeId}")
+	@GetMapping("/get/{employeeId}")
 	public EmployeeData retrieveEmployeeById(@PathVariable Long employeeId) {
 		log.info("Retrieving employee with ID={}", employeeId);
 		return employeeService.retrieveEmployeeById(employeeId);

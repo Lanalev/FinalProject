@@ -1,5 +1,5 @@
 package bar.os.entity;
-
+//author Svitlana Leven
 import java.util.HashSet;
 import java.util.Set;
 

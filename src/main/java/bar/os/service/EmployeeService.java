@@ -1,5 +1,5 @@
 package bar.os.service;
-
+//author Svitlana Leven
 import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -88,5 +88,10 @@ public class EmployeeService {
 		employeeDao.delete(employee);
 
 	}
+
+//	public EmployeeData findEmployeeRoleByID(Long employeeId) {
+//		Employee employeeRole = employeeDao.findEmployeeRoleByID(employeeId);
+//		return new EmployeeData();
+//	}
 
 }

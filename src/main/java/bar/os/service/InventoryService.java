@@ -17,6 +17,7 @@ import bar.os.dao.BottleTypeDao;
 import bar.os.dao.EmployeeDao;
 import bar.os.dao.InventoryDao;
 import bar.os.entity.BottleType;
+import bar.os.entity.Employee;
 import bar.os.entity.Inventory;
 
 @Service
@@ -135,12 +136,12 @@ public class InventoryService {
 		return response;
 	}
 
-	public void checkRole(Long employeeId) {
-		String employeeRole = employeeDao.findEmployeeRoleByID(employeeId);
-		if(!employeeRole.equals("manager")) {
-			throw new UnsupportedOperationException("You do not have permissions for this operation");
-		}
-	}
-
+//	public void checkRole(Long employeeId) {
+//		String employeeRole = employeeDao.findEmployeeRoleByID(employeeId);
+//		if(!employeeRole.equals("manager")) {
+//			throw new UnsupportedOperationException("You do not have permissions for this operation");
+//		}
+//	}
+//
 
 }

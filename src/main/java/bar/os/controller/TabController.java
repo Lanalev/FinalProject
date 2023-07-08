@@ -1,5 +1,5 @@
 package bar.os.controller;
-
+//author Svitlana Leven
 import java.util.List;
 import java.util.Map;
 
@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import bar.os.controller.model.EmployeeData;
 import bar.os.controller.model.TabData;
 import bar.os.service.TabService;
 import lombok.extern.slf4j.Slf4j;
@@ -27,19 +26,19 @@ public class TabController {
 	@Autowired
 	private TabService tabService;
 
-	@PostMapping("/add")
+	@PostMapping("/{employeeId}/add")
 	@ResponseStatus(code = HttpStatus.CREATED)
-	public TabData saveTab(@RequestBody TabData tabData) {
+	public TabData saveTab(@PathVariable Long employeeId, @RequestBody TabData tabData) {
 		log.info("Creating a tab {}", tabData);
-		return tabService.saveTab(tabData);
+		return tabService.saveTab(tabData, employeeId);
 
 	}
 
-	@PutMapping("/updatetab/{tabId}")
-	public TabData updateTab(@PathVariable Long tabId, @RequestBody TabData tabData) {
-		tabData.setTabId(tabId);
-		log.info("Updating tab {}", tabData);
-		return tabService.saveTab(tabData);
+	@PutMapping("{tabId}/addcocktail/{cocktailName}")
+	public TabData updateTab(@PathVariable Long tabId, @PathVariable String cocktailName) {
+		
+		log.info("Updating tab {}", tabId);
+		return tabService.addCocktailTab(cocktailName, tabId);
 	}
 
 	@GetMapping("/getall")

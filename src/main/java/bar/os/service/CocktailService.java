@@ -20,17 +20,17 @@ import bar.os.dao.EmployeeDao;
 import bar.os.dao.InventoryDao;
 import bar.os.entity.BottleType;
 import bar.os.entity.Cocktail;
-
+import bar.os.entity.Employee;
 
 @Service
 public class CocktailService {
-	
+
 	@Autowired
 	private CocktailDao cocktailDao;
-	
+
 	@Autowired
 	private BottleTypeDao bottleTypeDao;
-	
+
 	@Autowired
 	private EmployeeDao employeeDao;
 
@@ -55,8 +55,8 @@ public class CocktailService {
 
 	private Cocktail findOrCreateCocktail(Long cocktailId, String cocktailName) {
 		Cocktail cocktail;
-		
-		if(Objects.isNull(cocktailId)) {
+
+		if (Objects.isNull(cocktailId)) {
 			Optional<Cocktail> opCocktail = cocktailDao.findOpCocktailByName(cocktailName);
 			if (opCocktail.isPresent()) {
 				throw new DuplicateKeyException("cocktail with name " + cocktailName + " already exists");
@@ -65,12 +65,13 @@ public class CocktailService {
 		} else {
 			cocktail = findCocktailByName(cocktailName);
 		}
-		
+
 		return cocktail;
 	}
 
 	private Cocktail findCocktailByName(String cocktailName) {
-		return cocktailDao.findOpCocktailByName(cocktailName).orElseThrow(() -> new NoSuchElementException("Inventory item with the name " + cocktailName + "doesnt exist"));
+		return cocktailDao.findOpCocktailByName(cocktailName).orElseThrow(
+				() -> new NoSuchElementException("Inventory item with the name " + cocktailName + "doesnt exist"));
 	}
 
 	public Long getCocktailIdByName(String name) {
@@ -80,7 +81,7 @@ public class CocktailService {
 
 	@Transactional(readOnly = true)
 	public CocktailData retriveCocktailByName(String name) {
-		Cocktail cocktail = findCocktailByName(name);		
+		Cocktail cocktail = findCocktailByName(name);
 		return new CocktailData(cocktail);
 	}
 
@@ -88,50 +89,49 @@ public class CocktailService {
 	public List<CocktailData> retrieveAllCocktails() {
 		List<Cocktail> cocktails = cocktailDao.findAll();
 		List<CocktailData> response = new LinkedList<>();
-		
-		for(Cocktail cocktail : cocktails) {
+
+		for (Cocktail cocktail : cocktails) {
 			response.add(new CocktailData(cocktail));
 		}
 		return response;
 	}
-	
+
 	@Transactional(readOnly = false)
 	public void deleteByName(String name) {
-		Cocktail cocktail = findCocktailByName(name);				
+		Cocktail cocktail = findCocktailByName(name);
 		cocktailDao.delete(cocktail);
 	}
-	
+
 	@Transactional(readOnly = true)
 	public List<CocktailData> retrieveAllCocktailsByType(String type) {
-			List<Cocktail> cocktails =cocktailDao.findAll();
-			List<CocktailData> response = new LinkedList<>();
-			
-			for(Cocktail cocktail : cocktails) {
-				if (cocktail.getBaseLiqour().getName().equals(type))
+		List<Cocktail> cocktails = cocktailDao.findAll();
+		List<CocktailData> response = new LinkedList<>();
+
+		for (Cocktail cocktail : cocktails) {
+			if (cocktail.getBaseLiqour().getName().equals(type))
 				response.add(new CocktailData(cocktail));
-			}
-			
+		}
+
 		return response;
 	}
 
 	@Transactional(readOnly = false)
 	public CocktailData updateCocktail(CocktailData cocktailData, String cocktailName) {
-		Long cocktailId = cocktailData.getCocktailId();		
-		Cocktail cocktail = findOrCreateCocktail(cocktailId, cocktailData.getName());	
+		Long cocktailId = cocktailData.getCocktailId();
+		Cocktail cocktail = findOrCreateCocktail(cocktailId, cocktailData.getName());
 		BottleType bottleType = cocktail.getBaseLiqour();
 		setFieldsInCocktail(cocktail, cocktailData);
 		cocktail.setBaseLiqour(bottleType);
 		bottleType.getCocktails().add(cocktail);
-		Cocktail dbCocktail = cocktailDao.save(cocktail);	
+		Cocktail dbCocktail = cocktailDao.save(cocktail);
 		return new CocktailData(dbCocktail);
 	}
 
-	public void checkRole(Long employeeId) {
-		String employeeRole = employeeDao.findEmployeeRoleByID(employeeId);
-			if(!employeeRole.equals("manager")) {
-				throw new UnsupportedOperationException("You do not have permissions for this operation");
-			}
-		
-	}
+//	public void checkRole(Long employeeId) {
+//		Employee employeeRole = employeeDao.findEmployeeRoleByID(employeeId);
+//		if (!employeeRole.equals("manager")) {
+//			throw new UnsupportedOperationException("You do not have permissions for this operation");
+//		}
+//	}
 
 }
